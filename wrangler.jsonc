@@ -1,0 +1,24 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "tw-ubn-lookup-d1",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-01",
+  "observability": { "enabled": true },
+  "vars": {
+    "ALLOWED_ORIGINS": "*",
+    "CACHE_TTL": "86400",
+    // TTL for a found:false whose GCIS check returned an empty body: GCIS
+    // answers "no such company" and its outage mode identically, so keep it short.
+    "NEGATIVE_CACHE_TTL": "3600"
+  },
+  "d1_databases": [
+    // The Deploy to Cloudflare flow provisions this database and fills the id.
+    // Apply the pipeline's d1/schema.sql + delta.sql to populate it; until then
+    // /v1/vat falls back to the official FIA API and /v1/search returns empty.
+    {
+      "binding": "UBN_DB",
+      "database_name": "tw-ubn",
+      "database_id": "10d488a8-1a8d-4e40-81c0-a51d7c6dc1ff"
+    }
+  ]
+}
